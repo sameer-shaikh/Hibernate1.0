@@ -1,9 +1,11 @@
 package com.maven3.hiber;
 
+import java.util.List;
+import java.util.Random;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
@@ -41,7 +43,7 @@ public class App
         
         laptop.getStudent().add(s);*/
         
-        Alien2 a = null;
+       /* Alien2 a = null;
         
         Configuration con = new Configuration().configure().addAnnotatedClass(Alien2.class); 
         
@@ -70,7 +72,55 @@ public class App
    //   q2.setCacheable(true);
       System.out.println(a);
       s2.getTransaction().commit();
+      */
+        
+        Configuration con = new Configuration().configure().addAnnotatedClass(Student1.class); 
+        
+        ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(con.getProperties()).buildServiceRegistry();
+        
+        SessionFactory sf = con.buildSessionFactory(reg);
+        
+        Session session1 = sf.openSession();
+        
+        session1.beginTransaction();
       
-      
+        /*Random r = new Random();
+        
+        for (int i=1;i<=50;i++)
+        {
+        	Student1 s = new Student1();
+        	s.setRollno(i);
+        	s.setName("name"+i);
+        	s.setMarks(r.nextInt(100));
+        	session1.save(s);
+        }*/
+        	
+        Query q = session1.createQuery("select name,rollno from Student1 where rollno = 10");
+      //for unique single result n print all columns  
+       /* Student1 student = (Student1) q.uniqueResult();
+        System.out.println(student);*/
+        
+       // to fectch multiple rows 
+       /* List<Student1>student1 = q.list();
+        
+        for(Student1 s : student1)
+        {
+        	System.out.println(s);
+        }*/
+        
+        //unique row n only one columns
+       /* Object  student = (Object) q.uniqueResult();
+       System.out.println(student); */
+        
+        //unique row n multiple columns
+        Object []  student = (Object[]) q.uniqueResult();
+       /*for(Object o : student)
+       {
+        System.out.println(o);
+               }*/
+        //or
+       System.out.println(student[0]+" : "+student[1]);
+
+        session1.getTransaction().commit();
     }
 }
